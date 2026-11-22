@@ -1,5 +1,6 @@
 # LogWatch
 https://logwatch-security.streamlit.app/
+
 LogWatch is a Python and Streamlit dashboard for reviewing authentication log
 CSV files. It summarizes login outcomes and highlights IP addresses whose
 failed-login counts meet a user-configured threshold.
