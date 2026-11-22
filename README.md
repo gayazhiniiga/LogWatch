@@ -13,7 +13,9 @@ suspicious activity, not a confirmed attack or attribution.
 
 The dashboard combines one or more uploaded CSV files, validates each file's
 required columns, and passes the combined records to the existing analysis
-function in `main.py`. When no files are uploaded, it uses `login_logs.csv`.
+function in `main.py`. No data is analysed until at least one valid CSV is
+uploaded. Synthetic sample datasets are available to download and upload
+manually.
 
 ## Features
 
@@ -34,7 +36,7 @@ function in `main.py`. When no files are uploaded, it uses `login_logs.csv`.
   table.
 - Supports Streamlit's light and dark themes, with theme-aware dashboard
   styling.
-- Uses the built-in `login_logs.csv` when no upload is selected.
+- Provides downloadable beginner and one-week synthetic sample datasets.
 
 ## Technologies used
 
@@ -60,13 +62,17 @@ The dashboard dependencies are listed without pinned versions in
 ├── main.py
 ├── README.md
 ├── requirements.txt
+├── sample_data/
+│   ├── beginner_authentication_logs.csv
+│   └── one_week_authentication_logs.csv
 └── synthetic_login_activity_dataset.csv
 ```
 
 The additional CSV files shown above are present in the project folder and can
-be selected for analysis. Only `login_logs.csv` is loaded automatically when
-there is no upload. The local virtual environment and Python cache are omitted
-from this source-oriented tree.
+be selected for analysis. The datasets in `sample_data/` are synthetic
+downloadable examples; downloading them does not analyse them. The local
+virtual environment and Python cache are omitted from this source-oriented
+tree.
 
 ## CSV input format
 
@@ -139,9 +145,12 @@ them.
 
 ## Testing performed
 
-The application was checked with Streamlit AppTest and a live Streamlit
+The application has been checked with Streamlit AppTest and a live Streamlit
 startup. Checks covered:
 
+- An empty first visit with no metrics, charts, or authentication records.
+- Downloading sample files without starting analysis, and clearing uploads back
+  to the empty state.
 - Single-file and multiple-file uploads.
 - Aggregation of failed attempts for the same IP across files.
 - Preservation of duplicate rows and timestamp ordering.
@@ -154,8 +163,8 @@ No standalone test suite is included in the project folder.
 
 ## Limitations
 
-- LogWatch analyses uploaded or bundled CSV data; it is not a live monitoring
-  agent, SIEM, or alerting service.
+- LogWatch analyses uploaded CSV data; it is not a live monitoring agent,
+  SIEM, or alerting service.
 - A threshold match is a heuristic signal only. LogWatch does not confirm
   attacks, identify an actor, or establish that an IP is malicious.
 - Failed attempts are aggregated over all records supplied for that analysis;

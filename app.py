@@ -205,6 +205,10 @@ st.markdown("""
     color: var(--lw-text) !important;
   }
 
+  [data-testid="stHeaderActionElements"] a {
+    visibility: hidden !important;
+  }
+
   .stApp [data-testid="stCaptionContainer"],
   .stApp [data-testid="stCaptionContainer"] p,
   .stApp [data-testid="stMetricLabel"] {
@@ -702,7 +706,7 @@ with st.sidebar:
         file_label = "file" if len(uploaded_files) == 1 else "files"
         st.success(f"{len(uploaded_files)} CSV {file_label} selected")
     else:
-        st.info("Using built-in sample data")
+        st.info("No files uploaded yet. Upload a CSV to begin.")
 
     st.markdown("---")
     st.subheader("Detection rule")
@@ -711,6 +715,43 @@ with st.sidebar:
         icon=None,
     )
     st.caption("LogWatch 1.0")
+
+
+if not uploaded_files:
+    with st.container(border=True):
+        st.subheader("Upload authentication logs to get started")
+        st.write(
+            "Choose one or more CSV files in the sidebar to explore login "
+            "activity and identify repeated failed attempts."
+        )
+        st.caption(
+            "Your files are combined for analysis. Required columns: "
+            "timestamp, ip_address, status."
+        )
+
+    st.subheader("Try sample datasets")
+    st.write(
+        "Download a synthetic example, then upload it through the sidebar "
+        "to see the dashboard in action."
+    )
+
+    sample_data_dir = Path(__file__).with_name("sample_data")
+    sample_columns = st.columns(2)
+    sample_columns[0].download_button(
+        "Download beginner example",
+        data=(sample_data_dir / "beginner_authentication_logs.csv").read_bytes(),
+        file_name="beginner_authentication_logs.csv",
+        mime="text/csv",
+        width="stretch",
+    )
+    sample_columns[1].download_button(
+        "Download one-week dataset",
+        data=(sample_data_dir / "one_week_authentication_logs.csv").read_bytes(),
+        file_name="one_week_authentication_logs.csv",
+        mime="text/csv",
+        width="stretch",
+    )
+    st.stop()
 
 
 if uploaded_files:
@@ -807,11 +848,6 @@ if uploaded_files:
             .drop(columns="_parsed_timestamp")
         )
     source = StringIO(combined_data.to_csv(index=False))
-else:
-    source = Path(__file__).with_name("login_logs.csv").open(
-        "r",
-        encoding="utf-8",
-    )
 
 
 try:
