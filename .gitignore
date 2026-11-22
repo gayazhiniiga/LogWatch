@@ -43,3 +43,4 @@ $RECYCLE.BIN/
 *.log
 *.csv
 !login_logs.csv
+!sample_data/*.csv

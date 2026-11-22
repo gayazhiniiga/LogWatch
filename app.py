@@ -735,22 +735,39 @@ if not uploaded_files:
         "to see the dashboard in action."
     )
 
-    sample_data_dir = Path(__file__).with_name("sample_data")
+    sample_data_dir = Path(__file__).resolve().parent / "sample_data"
     sample_columns = st.columns(2)
-    sample_columns[0].download_button(
-        "Download beginner example",
-        data=(sample_data_dir / "beginner_authentication_logs.csv").read_bytes(),
-        file_name="beginner_authentication_logs.csv",
-        mime="text/csv",
-        width="stretch",
-    )
-    sample_columns[1].download_button(
-        "Download one-week dataset",
-        data=(sample_data_dir / "one_week_authentication_logs.csv").read_bytes(),
-        file_name="one_week_authentication_logs.csv",
-        mime="text/csv",
-        width="stretch",
-    )
+    beginner_sample_path = sample_data_dir / "beginner_authentication_logs.csv"
+    try:
+        beginner_sample = beginner_sample_path.read_bytes()
+    except OSError as error:
+        sample_columns[0].error(
+            f"Unable to load beginner sample dataset: {error}"
+        )
+    else:
+        sample_columns[0].download_button(
+            "Download beginner example",
+            data=beginner_sample,
+            file_name=beginner_sample_path.name,
+            mime="text/csv",
+            width="stretch",
+        )
+
+    weekly_sample_path = sample_data_dir / "one_week_authentication_logs.csv"
+    try:
+        weekly_sample = weekly_sample_path.read_bytes()
+    except OSError as error:
+        sample_columns[1].error(
+            f"Unable to load one-week sample dataset: {error}"
+        )
+    else:
+        sample_columns[1].download_button(
+            "Download one-week dataset",
+            data=weekly_sample,
+            file_name=weekly_sample_path.name,
+            mime="text/csv",
+            width="stretch",
+        )
     st.stop()
 
 
